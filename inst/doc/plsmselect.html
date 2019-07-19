@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Indrayudh Ghosal and Matthias Kormaksson" />
+
+<meta name="date" content="2019-07-16" />
+
+<title>The plsmselect package</title>
+
+<script src="data:application/x-javascript;base64,JChkb2N1bWVudCkucmVhZHkoZnVuY3Rpb24oKXsKICAgIGlmICh0eXBlb2YgJCgnW2RhdGEtdG9nZ2xlPSJ0b29sdGlwIl0nKS50b29sdGlwID09PSAnZnVuY3Rpb24nKSB7CiAgICAgICAgJCgnW2RhdGEtdG9nZ2xlPSJ0b29sdGlwIl0nKS50b29sdGlwKCk7CiAgICB9CiAgICBpZiAoJCgnW2RhdGEtdG9nZ2xlPSJwb3BvdmVyIl0nKS5wb3BvdmVyID09PSAnZnVuY3Rpb24nKSB7CiAgICAgICAgJCgnW2RhdGEtdG9nZ2xlPSJwb3BvdmVyIl0nKS5wb3BvdmVyKCk7CiAgICB9Cn0pOwo="></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The plsmselect package</h1>
+<h4 class="author">Indrayudh Ghosal and Matthias Kormaksson</h4>
+<h4 class="date">July 16, 2019</h4>
+
+
+
+<style>
+body {
+text-align: justify}
+</style>
+<div id="introduction" class="section level2">
+<h2>1. Introduction</h2>
+<p>Generalized Additive Models (GAMs) are characterized by a linear predictor that can be broken down into a sum of a linear term (the <span class="math inline">\(X\beta\)</span> term) and a smooth term (the <span class="math inline">\(\sum_j f_j(x_j)\)</span> term). The goal of <code>plsmselect</code> is to provide a flexible interface for parameter estimation under various penalty structures on the linear parameters <span class="math inline">\(\beta\)</span> (“none”, <span class="math inline">\(\ell_1\)</span>, or <span class="math inline">\(\ell_2\)</span>) and the <em>smooth</em> functions <span class="math inline">\(f_j\)</span>’s (<span class="math inline">\(\ell_1\)</span> or <span class="math inline">\(\ell_2\)</span>). Most noteworthy, the package allows users to fit so called <em>GAMLASSO</em> models that add an <span class="math inline">\(\ell_1\)</span> penalty on both the linear parameters <span class="math inline">\(\beta\)</span> and the smooth functions <span class="math inline">\(f_j\)</span>’s. Extension to Cox regression is also implemented, which allows users to fit <em>GAMLASSO</em> models to censored time-to-event data. Demonstration of package usage for all families (<code>gaussian</code>, <code>binomial</code>, <code>poisson</code>, and <code>cox</code>) can be found in the <a href="#examples">Examples</a> section and users that are more interested in package functionalities (than methodological details) may skip right to that section.</p>
+<p>To the best of our knowledge this is the first R-package that can fit GAM models with <span class="math inline">\(\ell_1\)</span> penalty on both the linear and smooth terms (i.e. so called <em>GAMLASSO</em> models) for <code>gaussian</code>, <code>binomial</code>, <code>poisson</code>, and <code>cox</code> families. <span class="citation">(Chouldechova and Hastie <a href="#ref-gamsel">2015</a>)</span> proposed a similar method that selects between fitting each of the smooth terms <span class="math inline">\(f_j\)</span>’s as zero, linear, or nonlinear, as determined by the data. This method has been implemented in the R-package <code>gamsel</code> <span class="citation">(Chouldechova, Hastie, and Spinu <a href="#ref-gamselRpackage">2018</a>)</span> but is only applicable for the <code>gaussian</code> and <code>binomial</code> families. When dealing with continuous variables both <code>gamsel</code> and <code>plsmselect</code> retain the interpretability advantages of linear (or zero) fits when appropriate, while capturing strong non-linear relationships when they are present.</p>
+<p>The main idea of the <em>GAMLASSO</em> model involves combining codes from the two benchmark packages for fitting GAM models on the one hand, <code>mgcv</code> <span class="citation">(S. Wood <a href="#ref-mgcvRpackage">2019</a>)</span>, and LASSO models on the other, <code>glmnet</code> <span class="citation">(Friedman et al. <a href="#ref-glmnetRpackage">2019</a>)</span>. The former package allows for flexible modeling of non-linear effects (but does not facilitate <span class="math inline">\(\ell_1\)</span> penalty on linear terms) while the latter package allows for <span class="math inline">\(\ell_1\)</span> penalty on linear terms (but does not facilitate estimation of non-linear effects). <code>plsmselect</code> allows for both by borrowing strength between the two. The main model object of <code>plsmselect</code> (<code>gamlasso</code>) in fact inherits objects from <code>mgcv::gam</code> and <code>glmnet::cv.glmnet</code> making it particularly easy to work with for users that are familiar with both of those packages.</p>
+</div>
+<div id="method" class="section level2">
+<h2>2. Methods</h2>
+The goal of <code>plsmselect</code> is to estimate the parameters of Generalized Additive Models of the form
+<span class="math display">\[\begin{align}
+g(\mu) = \beta_0 + X \beta + \sum_{j=1}^q f_j(Z_j), \qquad\qquad (1)
+\end{align}\]</span>
+<p>under different penalty structures on the linear parameters <span class="math inline">\(\beta\)</span> (“none”, <span class="math inline">\(\ell_1\)</span>, or <span class="math inline">\(\ell_2\)</span>) and the <em>smooth</em> functions <span class="math inline">\(f_j\)</span>’s (<span class="math inline">\(\ell_1\)</span> or <span class="math inline">\(\ell_2\)</span>). In the above <span class="math inline">\(\mu\)</span> denotes the mean of a response <span class="math inline">\(Y\)</span> that is assumed to follow a distribution from the exponential dispersion family (with associated link function <span class="math inline">\(g\)</span>), <span class="math inline">\(X\)</span> is a model matrix for <em>linear</em> predictors (e.g. indicators corresponding to categorical variables) and <span class="math inline">\(Z_j\)</span>’s are <em>smooth</em> predictors (e.g. all continuous covariates that potentially have a non-linear relationship with the response).</p>
+The package also fits generalized additive models for survival data whose models are of the form:
+<span class="math display">\[\begin{equation}
+\lambda(t) = \lambda_0(t) \exp \left( X \beta + \sum_{j=1}^q f_j(Z_j) \right), \qquad\qquad (2)
+\end{equation}\]</span>
+<p>where <span class="math inline">\(\lambda(t)\)</span> is the hazard function corresponding to a censored time-to-event response <span class="math inline">\(T\)</span> and <span class="math inline">\(\lambda_0(t)\)</span> is the baseline hazard.</p>
+<p><strong>Penalties</strong>: <code>gamlasso</code> - the main function of <code>plsmselect</code> deals with all the combinations of penalty structures as presented in the following table:</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">None</th>
+<th align="center"><span class="math inline">\(\ell_1\)</span></th>
+<th align="center"><span class="math inline">\(\ell_2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\beta\)</span></td>
+<td align="right">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(f_j\)</span>’s</td>
+<td align="right"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+</tbody>
+</table>
+<p>For example having no penalty on <span class="math inline">\(\beta\)</span> and an <span class="math inline">\(\ell_2\)</span> penalty on the <span class="math inline">\(f_j\)</span>’s is the same fit as can be obtained by simply using <code>mgcv::gam</code>. We could also fit a model with <span class="math inline">\(\ell_1\)</span> penalty on <span class="math inline">\(\beta\)</span> and no smooth component at all in which case we could simply use <code>glmnet::cv.glmnet</code>.</p>
+<p>The main novelty of <code>plsmselect</code> is when we impose <span class="math inline">\(\ell_1\)</span> penalty on both <span class="math inline">\(\beta\)</span> and the <span class="math inline">\(f_j\)</span>’s. This means the model expects some of the elements of <span class="math inline">\(\beta\)</span> to be 0 and some of the functions <span class="math inline">\(f_j \equiv 0\)</span>, i.e., we need to do variable selection for linear and smooth predictors simultaneously. In this case we use the <em>GAMLASSO</em> algorithm described in the following section.</p>
+<p>Note that the <span class="math inline">\(\ell_1\)</span> and <span class="math inline">\(\ell_2\)</span> penalties on <span class="math inline">\(\beta\)</span> are the standard Lasso and Ridge penalties. As for penalties on the <span class="math inline">\(f_j\)</span>’s note that by <span class="math inline">\(\ell_2\)</span> penalty we imply the standard smoothness penalty used on the functions (detailed in the <a href="#background">background</a> section). The <span class="math inline">\(\ell_1\)</span>-type penalty used on the functions <span class="math inline">\(f_j\)</span> is actually a variant of the smoothness penalty but it forces a function to be 0 in case it is not significant - in this case it acts similar to the Lasso penalty. See <code>?mgcv::smooth.terms</code> for more details on this type of penalty.</p>
+<div id="algo" class="section level3">
+<h3>The <em>GAMLASSO</em> algorithm</h3>
+<p>When we are fitting a model with <span class="math inline">\(\ell_1\)</span> penalty on the linear coefficients <span class="math inline">\(\beta\)</span> we apply the <em>GAMLASSO</em> algorithm:</p>
+<hr />
+<ul>
+<li><p><span class="math inline">\(offset = 0\)</span></p></li>
+<li><strong><em>loop until convergence</em></strong> of the fitted values
+<ul>
+<li><p>Fit <span class="math inline">\(Y \sim \beta_0 + \sum_{j=1}^q f_j(Z_j) + offset\)</span> with either <span class="math inline">\(\ell_1\)</span> or <span class="math inline">\(\ell_2\)</span> penalty on <span class="math inline">\(f_j\)</span>’s.<br />
+Set <span class="math inline">\(offset \leftarrow \hat{\beta}_0 + \sum_{j=1}^q \hat{f_j}(Z_j)\)</span></p></li>
+<li><p>Fit <span class="math inline">\(Y \sim X \beta + offset\)</span> with <span class="math inline">\(\ell_1\)</span> penalty on <span class="math inline">\(\beta\)</span>.<br />
+Set <span class="math inline">\(offset \leftarrow X \hat{\beta}\)</span>.</p></li>
+</ul></li>
+</ul>
+<hr />
+<p>We can think of this approach as a <strong>block coordinate descent algorithm</strong>. The first block having the intercept <span class="math inline">\(\beta_0\)</span> and the linear coefficients of the basis functions corresponding to the the smooth functions <span class="math inline">\(f_j\)</span> (more details in the <a href="#background">background</a> section). The second block containing the <span class="math inline">\(\beta\)</span>’s corresponding to the linear predictors. The former block is implemented by invoking the <code>mgcv</code> package while the latter is implemented with <code>glmnet</code>.</p>
+<p>The other combinations with none or <span class="math inline">\(\ell_2\)</span> penalties on <span class="math inline">\(\beta\)</span> already have closed form solutions. They have been implemented in the <code>mgcv</code> package and so in these cases <code>gamlasso</code> acts as a wrapper to those implementations.</p>
+</div>
+<div id="background" class="section level3">
+<h3>Background on fitting a generalized additive model (gam)</h3>
+<p>For a simple model <span class="math inline">\(Y = f(X) + \epsilon\)</span>, given data <span class="math inline">\((y_i,x_i)_{i=1}^n\)</span> we can estimate <span class="math inline">\(f\)</span> assuming it to be of the form <span class="math display">\[
+f(x) = \sum_{k=1}^K b_k(x) \beta_k,
+\]</span> for some basis functions <span class="math inline">\(b_k\)</span> and corresponding weights <span class="math inline">\(\beta_k\)</span>.</p>
+<p>In practice the basis functions are known. So replacing <span class="math inline">\(f\)</span> in the first equation gives us a linear model which we can solve for the <span class="math inline">\(\beta_k\)</span> values.</p>
+<p>Of course in general the choice of basis functions is key. One choice could be polynomials (spline fitting) with prespecified knots. Now polynomials are sufficient for approximating functions at specific points but could become too “wiggly” over a whole domain. Piecewise linear basis functions gives a “better” fit but is not “smooth”. Cubic regression splines with fixed knots <span class="math inline">\(x^*_1, \dots, x^*_K\)</span> provide an attractive solution as a smooth alternative to the intuitive picewise linear splines. With such a spline basis representation we can add a “wigglyness” penalty <span class="math display">\[
+\lambda \sum_{k=2}^{K-1} \big(f(x^*_{j-1}) - 2f(x^*_j) + f(x^*_{j+1})\big)^2 = \lambda \beta^T S \beta,
+\]</span> The penalty is a second order one, as an approximation to the penalty on second derivatives used in spline fitting. Cross-validation is used for estimating <span class="math inline">\(\lambda\)</span>.</p>
+<p>In the standard software used to fit a gam (<code>mgcv</code>) the <em>thin plate regularized spline</em> (tprs) basis functions are used. More details can be found in <span class="citation">(S. N. Wood <a href="#ref-wood2003thin">2003</a>)</span></p>
+<p>For two or more smooth predictors the model is <span class="math display">\[
+Y = f_1(X_1) + f_2(X_2) + \dots + \epsilon
+\]</span> Now both <span class="math inline">\(f_1\)</span> and <span class="math inline">\(f_2\)</span> cannot be uniquely identified. So we always have an intercept <span class="math inline">\(\beta_0\)</span> and identifiability contraints <span class="math display">\[
+\sum_{i=1}^n f_1(X_{1i}) = \sum_{i=1}^n f_2(X_{2i}) = 0.
+\]</span></p>
+<p><strong>Note</strong>:</p>
+<ul>
+<li>Both <span class="math inline">\(f_1\)</span> and <span class="math inline">\(f_2\)</span> will have their own <span class="math inline">\(\ell_2\)</span> smoothing/“wigglyness” penalties.</li>
+<li>This model is more restrictive than the general bivariate smoothing model <span class="math inline">\(Y = f(X_1, X_2) + \epsilon\)</span>.</li>
+</ul>
+<p>In general for fitting a model with linear predictors and/or more than one smooth predictors we can write it as a linear model (similar to the univariate smooth case above) and proceed accordingly.</p>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2>3. Examples</h2>
+<p>In this section we will go over some of the functionalities of <code>plsmselect</code> on a simulated dataset. In particular, we will demonstrate how to use the package to fit Generalized Additive Models under different penalty structures to data arising from the following families: <code>gaussian</code>, <code>binomial</code>, <code>poisson</code>, and <code>cox</code>. We will focus our attention on the so called <em>GAMLASSO</em> model that involves an <span class="math inline">\(\ell_1\)</span> penalty on both linear parameters <span class="math inline">\(\beta\)</span> and smooth functions <span class="math inline">\(f_j\)</span>’s.</p>
+<p>In the next subsection we will describe the simulated example data set. After that we demonstrate how to fit the <em>GAMLASSO</em> model to <code>gaussian</code>, <code>binomial</code> and <code>poisson</code> responses. Finally, we will show how to fit the Cox <em>GAMLASSO</em> model to survival data (censored time-to-event responses).</p>
+<div id="simulated-dataset" class="section level3">
+<h3>Simulated dataset</h3>
+<p><code>plsmselect</code> comes with a simulated toy data set that we will use to demonstrate package functionalities. This data set <code>simData</code> will be used in all below analyses.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(plsmselect)
+
+<span class="kw">data</span>(simData)</code></pre></div>
+<table class="table table-striped" style="font-size: 11.5px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
+Table 1. First 6 samples of the simulated data set: simData.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+id
+</th>
+<th style="text-align:right;">
+x1
+</th>
+<th style="text-align:right;">
+x2
+</th>
+<th style="text-align:right;">
+x3
+</th>
+<th style="text-align:right;">
+x4
+</th>
+<th style="text-align:right;">
+x5
+</th>
+<th style="text-align:right;">
+x6
+</th>
+<th style="text-align:right;">
+x7
+</th>
+<th style="text-align:right;">
+x8
+</th>
+<th style="text-align:right;">
+x9
+</th>
+<th style="text-align:right;">
+x10
+</th>
+<th style="text-align:right;">
+z1
+</th>
+<th style="text-align:right;">
+z2
+</th>
+<th style="text-align:right;">
+z3
+</th>
+<th style="text-align:right;">
+z4
+</th>
+<th style="text-align:right;">
+lp
+</th>
+<th style="text-align:right;">
+Yg
+</th>
+<th style="text-align:right;">
+Yb
+</th>
+<th style="text-align:right;">
+Yp
+</th>
+<th style="text-align:right;">
+success
+</th>
+<th style="text-align:right;">
+failure
+</th>
+<th style="text-align:right;">
+time
+</th>
+<th style="text-align:right;">
+status
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+i1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+0.86
+</td>
+<td style="text-align:right;">
+0.03
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+-0.12
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+44.83
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.59
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+0.89
+</td>
+<td style="text-align:right;">
+0.49
+</td>
+<td style="text-align:right;">
+2.46
+</td>
+<td style="text-align:right;">
+2.54
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2.24
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i3
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+0.22
+</td>
+<td style="text-align:right;">
+0.49
+</td>
+<td style="text-align:right;">
+0.54
+</td>
+<td style="text-align:right;">
+1.13
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+10.61
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:right;">
+0.72
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:right;">
+2.24
+</td>
+<td style="text-align:right;">
+2.17
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.02
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.85
+</td>
+<td style="text-align:right;">
+0.87
+</td>
+<td style="text-align:right;">
+0.49
+</td>
+<td style="text-align:right;">
+0.73
+</td>
+<td style="text-align:right;">
+2.02
+</td>
+<td style="text-align:right;">
+2.03
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+30.37
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+i6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.48
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:right;">
+0.56
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+0.97
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+20.87
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>id:</strong> Sample (subject) ID</li>
+<li><strong>x1,…,x10:</strong> Binary covariates</li>
+<li><strong>z1,…,z4:</strong> Continuous covariates</li>
+<li><strong>lp:</strong> True linear predictor of eq. (1) and (2) in <span id="method">Methods</span>: <span class="math inline">\(l_p=x_1-0.6x_2+0.5x_3+z_1^3 + \sin(\pi \cdot z_2)\)</span>.</li>
+<li><strong>Yg:</strong> Simulated Gaussian variable with mean <span class="math inline">\(l_p\)</span> and standard deviation <span class="math inline">\(\sigma=0.1\)</span>.</li>
+<li><strong>Yb:</strong> Simulated Bernoulli variable with success probability <span class="math inline">\(p=\exp(l_p)/(1+\exp(l_p))\)</span>.</li>
+<li><strong>success:</strong> Simulated <span class="math inline">\(Binomial(n,p)\)</span> variable with varying sample size <span class="math inline">\(n\)</span> per <strong>id</strong>.</li>
+<li><strong>failure:</strong> <span class="math inline">\(n-\)</span><strong>success</strong>.</li>
+<li><strong>Yp</strong>: Simulated <span class="math inline">\(Poisson(\lambda)\)</span> variable with mean <span class="math inline">\(\lambda=\exp(l_p)\)</span>.</li>
+<li><strong>time</strong>: Time-to-event simulated from Cox-model (2) in <span id="method">Methods</span> with linear predictor <span class="math inline">\(l_p\)</span>.</li>
+<li><strong>status:</strong> Indicator for whether the subject experienced event (status<span class="math inline">\(=1\)</span>) or was censored (status<span class="math inline">\(=0\)</span>).</li>
+</ul>
+<p>The details of how this data is simulated can be found in the <a href="#appendix">Appendix</a>.</p>
+</div>
+<div id="exgaussian" class="section level3">
+<h3>Gaussian GAMLASSO model with <code>plsmselect</code></h3>
+In this section we fit the following GAM model to the response <span class="math inline">\(Y_g\)</span> from <code>simData</code> in Table 1:
+<span class="math display">\[\begin{align}
+Y_g = \beta_0 + X \beta + \sum_{j=1}^4 f_j(z_j) + \varepsilon,
+\end{align}\]</span>
+<p>where both <span class="math inline">\(\beta\)</span> and the <span class="math inline">\(f_j\)</span>’s are subject to <span class="math inline">\(\ell_1\)</span> penalties. In the above <span class="math inline">\(\varepsilon \sim N(0,\sigma^2)\)</span>, <span class="math inline">\(X\)</span> denotes the model matrix corresponding to the binary variables <span class="math inline">\(x_1,\dots,x_{10}\)</span> and <span class="math inline">\(z_1, \dots, z_4\)</span> denote the continuous variables of <code>simData</code>.</p>
+<p>(Note that the notation here is vectorized, for example the <span class="math inline">\(i\)</span> element of the vector <span class="math inline">\(Z_j\)</span> is used for the <span class="math inline">\(i\)</span> element of the vector <span class="math inline">\(Y_g\)</span>. We will use a similar vectorised notation henceforth)</p>
+<p>Below we demonstrate the code for fitting this GAMLASSO model using the <code>plsmselect</code> formula specification. Note that for the formula specification the model (design) matrix <span class="math inline">\(X\)</span> needs to be computed and appended to the simData set. The same code generalizes to situations where <span class="math inline">\(x_1,\dots,x_{10}\)</span> are categorical factor variables.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create model matrix X corresponding to linear terms
+## (necessary for the formula option of gamlasso below)
+simData<span class="op">$</span>X =<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>x1<span class="op">+</span>x2<span class="op">+</span>x3<span class="op">+</span>x4<span class="op">+</span>x5<span class="op">+</span>x6<span class="op">+</span>x7<span class="op">+</span>x8<span class="op">+</span>x9<span class="op">+</span>x10, <span class="dt">data=</span>simData)[,<span class="op">-</span><span class="dv">1</span>]
+
+## The formula approach
+gfit =<span class="st"> </span><span class="kw">gamlasso</span>(Yg <span class="op">~</span><span class="st"> </span>X <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z1, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z2, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z3, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z4, <span class="dt">k=</span><span class="dv">5</span>, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>Alternatively, we can fit the above model using the <code>plsmselect</code> term specification:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The term specification approach
+gfit =<span class="st"> </span><span class="kw">gamlasso</span>(<span class="dt">response =</span> <span class="st">&quot;Yg&quot;</span>,
+                <span class="dt">linear.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),
+                <span class="dt">smooth.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;z&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">linear.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">smooth.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">num.knots =</span> <span class="dv">5</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>The term specification approach is helpful when you have a large data set with multiple columns, but has the disadvantage that the number of knots is constant across all smooth terms. With the formula approach on the other hand the user has full flexibility in defining different numbers of knots per smooth term.</p>
+<p><strong><code>gamlasso</code> object:</strong> The <code>gamlasso</code> object <code>gfit</code> is a list with first component corresponding to the smooth gam part of the fit (<code>gfit$gam</code>: a <code>gam</code> object from the package <code>mgcv</code>; see <code>?mgcv::gam</code>) and a second component corresponding to the linear lasso part of the fit (<code>gfit$cv.glmnet</code>: a <code>cv.glmnet</code> object from the package <code>glmnet</code>; see <code>?glmnet::cv.glmnet</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># mgcv::gam object:</span>
+<span class="kw">class</span>(gfit<span class="op">$</span>gam)</code></pre></div>
+<pre><code>#&gt; [1] &quot;gam&quot; &quot;glm&quot; &quot;lm&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># glmnet::cv.glmnet object</span>
+<span class="kw">class</span>(gfit<span class="op">$</span>cv.glmnet)</code></pre></div>
+<pre><code>#&gt; [1] &quot;cv.glmnet&quot;</code></pre>
+<p>The summary of the <em>GAMLASSO</em> model can be obtained with the following command:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(gfit)</code></pre></div>
+<pre><code>#&gt; $lasso
+#&gt; 11 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;                      1
+#&gt; (Intercept)  .        
+#&gt; Xx1          0.6732336
+#&gt; Xx2         -0.3473150
+#&gt; Xx3          0.2624157
+#&gt; Xx4          .        
+#&gt; Xx5          .        
+#&gt; Xx6          .        
+#&gt; Xx7          .        
+#&gt; Xx8          .        
+#&gt; Xx9          .        
+#&gt; Xx10         .        
+#&gt; 
+#&gt; $gam
+#&gt; 
+#&gt; Family: gaussian 
+#&gt; Link function: identity 
+#&gt; 
+#&gt; Formula:
+#&gt; Yg ~ s(z1, k = 5, bs = &quot;ts&quot;) + s(z2, k = 5, bs = &quot;ts&quot;) + s(z3, 
+#&gt;     k = 5, bs = &quot;ts&quot;) + s(z4, k = 5, bs = &quot;ts&quot;)
+#&gt; 
+#&gt; Parametric coefficients:
+#&gt;             Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)  1.00317    0.02695   37.22   &lt;2e-16 ***
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; Approximate significance of smooth terms:
+#&gt;             edf Ref.df      F p-value    
+#&gt; s(z1) 3.211e+00      4 28.129  &lt;2e-16 ***
+#&gt; s(z2) 3.051e+00      4 31.848  &lt;2e-16 ***
+#&gt; s(z3) 1.364e-09      4  0.000   0.507    
+#&gt; s(z4) 1.787e+00      4  0.708   0.194    
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#&gt; 
+#&gt; R-sq.(adj) =  0.892   Deviance explained = 71.9%
+#&gt; GCV = 0.079868  Scale est. = 0.07264   n = 100</code></pre>
+<p>We note that the summary is broken into a <em>lasso</em> summary and a <em>gam</em> summary. The <em>lasso</em> summary shows the linear parameter estimates and we note that in the above case only the first three linear parameters are estimated as non-zero. Compare these values to the underlying “truth” as defined in the simulation section of <a href="#appendix">Appendix</a> (<span class="math inline">\(\beta_1=1\)</span>, <span class="math inline">\(\beta_2=-0.6\)</span>, <span class="math inline">\(\beta_3=0.5\)</span>, <span class="math inline">\(\beta_4=\cdots=\beta_{10}=0\)</span>). The <em>gam</em> summary corresponds to the (<code>mgcv</code>) summary of the gam object gfit$gam (see <code>?mgcv::summary.gam</code>).</p>
+<p>We can visualize the estimates of the smooth functions by calling the <code>mgcv::plot.gam</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plot the estimates of the smooth effects:
+<span class="kw">plot</span>(gfit<span class="op">$</span>gam, <span class="dt">pages=</span><span class="dv">1</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>We note that the functions corresponding to the variables <span class="math inline">\(z_3\)</span> and <span class="math inline">\(z_4\)</span> are estimated to be near zero (confidence bands include zero). Compare these estimates to the underlying “truth” as defined in the simulation section of <a href="#appendix">Appendix</a> (<span class="math inline">\(f_1(z)=z^3\)</span>, <span class="math inline">\(f_2(z)=\sin(\pi\cdot z)\)</span>, <span class="math inline">\(f_3(z)=f_4(z)=0\)</span>). Note that <code>mgcv</code> applies a sum constraint on each function <span class="math inline">\(\sum_k f_1(z_{1k})=\cdots=\sum_k f_4(z_{4k})=0\)</span>, where the sum is taken across all observations (samples) of <span class="math inline">\(z_1,\dots,z_4\)</span> (see <a href="#methods">Methods</a> section). Hence the model only estimates the functions (and overall intercept) correctly up to a vertical shift. However, we can verify that the model’s fitted values <span class="math inline">\(\hat{Y}_g\)</span> match nicely those that were observed <span class="math inline">\(Y_g\)</span>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Plot fitted versus observed values:
+<span class="kw">plot</span>(simData<span class="op">$</span>Yg, <span class="kw">predict</span>(gfit), <span class="dt">xlab =</span> <span class="st">&quot;Observed values&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Fitted Values&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="poisson-gamlasso-regression-with-plsmselect" class="section level3">
+<h3>Poisson GAMLASSO regression with <code>plsmselect</code></h3>
+In this section we fit a Poisson regression model to the response <span class="math inline">\(Y_p \sim Poi(\lambda)\)</span> from <code>simData</code>
+<span class="math display">\[\begin{align}
+\log(\lambda) = \beta_0 + X \beta + \sum_{j=1}^4 f_j(z_j),
+\end{align}\]</span>
+<p>where both <span class="math inline">\(\beta\)</span> and the <span class="math inline">\(f_j\)</span>’s are subject to <span class="math inline">\(\ell_1\)</span> penalties.</p>
+<p>The above model can be fit using the formula approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create model matrix X corresponding to linear terms
+## (necessary for the formula option of gamlasso below)
+simData<span class="op">$</span>X =<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>x1<span class="op">+</span>x2<span class="op">+</span>x3<span class="op">+</span>x4<span class="op">+</span>x5<span class="op">+</span>x6<span class="op">+</span>x7<span class="op">+</span>x8<span class="op">+</span>x9<span class="op">+</span>x10, <span class="dt">data=</span>simData)[,<span class="op">-</span><span class="dv">1</span>]
+
+## Poisson response. Formula approach.
+pfit =<span class="st"> </span><span class="kw">gamlasso</span>(Yp <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z1, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z2, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z3, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z4, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>or alternatively with the term specification approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Poisson response. Term-specification approach.
+pfit =<span class="st"> </span><span class="kw">gamlasso</span>(<span class="dt">response =</span> <span class="st">&quot;Yp&quot;</span>,
+                <span class="dt">linear.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),
+                <span class="dt">smooth.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;z&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">linear.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">smooth.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">family =</span> <span class="st">&quot;poisson&quot;</span>,
+                <span class="dt">num.knots =</span> <span class="dv">5</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>We can obtain the linear parameter estimates directly:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(pfit<span class="op">$</span>cv.glmnet, <span class="dt">s=</span><span class="st">&quot;lambda.min&quot;</span>)</code></pre></div>
+<pre><code>#&gt; 11 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+#&gt;                      1
+#&gt; (Intercept)  .        
+#&gt; Xx1          0.7535747
+#&gt; Xx2         -0.4572487
+#&gt; Xx3          0.4357671
+#&gt; Xx4          .        
+#&gt; Xx5          .        
+#&gt; Xx6          .        
+#&gt; Xx7          .        
+#&gt; Xx8          .        
+#&gt; Xx9          .        
+#&gt; Xx10         .</code></pre>
+<p>and plot the smooth estimates of individual terms:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))
+<span class="kw">plot</span>(pfit<span class="op">$</span>gam, <span class="dt">select=</span><span class="dv">1</span>) <span class="co"># estimate of smooth term z1</span>
+<span class="kw">plot</span>(pfit<span class="op">$</span>gam, <span class="dt">select=</span><span class="dv">2</span>) <span class="co"># estimate of smooth term z2</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>We note that the linear parameter estimates reasonably capture the underlying truth: <span class="math inline">\(\beta_1=1\)</span>, <span class="math inline">\(\beta_2=-0.6\)</span>, <span class="math inline">\(\beta_3=0.5\)</span>, <span class="math inline">\(\beta_4=\dots,\beta_{10}=0\)</span> (only shrunk towards zero as expected). Similarly we see that the estimates of the smooth effects corresponding to <span class="math inline">\(z_1\)</span> and <span class="math inline">\(z_2\)</span> are consistent with the true functions <span class="math inline">\(f_1(z)=z^3\)</span> and <span class="math inline">\(f_2(z)=\sin(\pi\cdot z)\)</span> up to a constant vertical shift (due to sum constraint). We can further verify how well the model estimates the true expected counts <span class="math inline">\(\exp(l_p)\)</span>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">predict</span>(pfit, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>), <span class="kw">exp</span>(simData<span class="op">$</span>lp), <span class="dt">xlab=</span><span class="st">&quot;predicted count&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;true expected count&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="exbernoulli" class="section level3">
+<h3>Binary logistic GAMLASSO regression with <code>plsmselect</code></h3>
+In this section we fit a binary logistic regression model to the response <span class="math inline">\(Y_b \sim Bernoulli(p)\)</span> from <code>simData</code>:
+<span class="math display">\[\begin{align}
+\log\left(\frac{p}{1-p}\right) = \beta_0 + X \beta + \sum_{j=1}^4 f_j(z_j),
+\end{align}\]</span>
+<p>where both <span class="math inline">\(\beta\)</span> and the <span class="math inline">\(f_j\)</span>’s are subject to <span class="math inline">\(\ell_1\)</span> penalties.</p>
+<p>The above model can be fit using the formula approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create model matrix X corresponding to linear terms
+## (necessary for the formula option of gamlasso below)
+simData<span class="op">$</span>X =<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>x1<span class="op">+</span>x2<span class="op">+</span>x3<span class="op">+</span>x4<span class="op">+</span>x5<span class="op">+</span>x6<span class="op">+</span>x7<span class="op">+</span>x8<span class="op">+</span>x9<span class="op">+</span>x10, <span class="dt">data=</span>simData)[,<span class="op">-</span><span class="dv">1</span>]
+
+## Bernoulli trials response
+bfit =<span class="st"> </span><span class="kw">gamlasso</span>(Yb <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z1, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z2, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z3, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                  </span><span class="kw">s</span>(z4, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>or alternatively using the term specification approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## The term specification approach
+bfit =<span class="st"> </span><span class="kw">gamlasso</span>(<span class="dt">response =</span> <span class="st">&quot;Yb&quot;</span>,
+                <span class="dt">linear.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),
+                <span class="dt">smooth.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;z&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">family=</span><span class="st">&quot;binomial&quot;</span>,
+                <span class="dt">linear.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">smooth.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">num.knots =</span> <span class="dv">5</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>We can evalute the <code>summary</code>, plot the smooth terms and compare predicted probabilities to underlying truth as above (not evaluated):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(bfit)
+<span class="kw">plot</span>(bfit<span class="op">$</span>gam, <span class="dt">pages=</span><span class="dv">1</span>)
+pred.prob &lt;-<span class="st"> </span><span class="kw">predict</span>(bfit, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+true.prob &lt;-<span class="st"> </span><span class="kw">exp</span>(simData<span class="op">$</span>lp)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(simData<span class="op">$</span>lp))
+<span class="kw">plot</span>(pred.prob, true.prob, <span class="dt">xlab=</span><span class="st">&quot;predicted probability&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;true probability&quot;</span>)</code></pre></div>
+<p>Note that the above model does not fit the data well since this is a small data set (<span class="math inline">\(N=100\)</span>) for Binary logistic regression.</p>
+</div>
+<div id="binomial-counts-gamlasso-model-with-plsmselect" class="section level3">
+<h3>Binomial counts GAMLASSO model with <code>plsmselect</code></h3>
+In this section we fit a binomial logistic regression model to the response <span class="math inline">\(success \sim Binomial(n, p)\)</span> from <code>simData</code> (where <span class="math inline">\(n\)</span> denotes varying count totals across subjects <strong>id</strong>):
+<span class="math display">\[\begin{align}
+\log\left(\frac{p}{1-p}\right) = \beta_0 + X \beta + \sum_{j=1}^4 f_j(z_j),
+\end{align}\]</span>
+<p>where both <span class="math inline">\(\beta\)</span> and the <span class="math inline">\(f_j\)</span>’s are subject to <span class="math inline">\(\ell_1\)</span> penalties.</p>
+<p>We define <span class="math inline">\(failure=n-success\)</span> and use the formula specification approach to fit the above model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create model matrix X corresponding to linear terms
+## (necessary for the formula option of gamlasso below)
+simData<span class="op">$</span>X =<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>x1<span class="op">+</span>x2<span class="op">+</span>x3<span class="op">+</span>x4<span class="op">+</span>x5<span class="op">+</span>x6<span class="op">+</span>x7<span class="op">+</span>x8<span class="op">+</span>x9<span class="op">+</span>x10, <span class="dt">data=</span>simData)[,<span class="op">-</span><span class="dv">1</span>]
+
+## Binomial counts response. Formula approach.
+bfit2 =<span class="st"> </span><span class="kw">gamlasso</span>(<span class="kw">cbind</span>(success,failure) <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>
+<span class="st">                   </span><span class="kw">s</span>(z1, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                   </span><span class="kw">s</span>(z2, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                   </span><span class="kw">s</span>(z3, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">                   </span><span class="kw">s</span>(z4, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>),
+                 <span class="dt">data =</span> simData,
+                 <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,
+                 <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>or alternatively using the term specification approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Binomial counts response. Term specification approach
+bfit2 =<span class="st"> </span><span class="kw">gamlasso</span>(<span class="kw">c</span>(<span class="st">&quot;success&quot;</span>,<span class="st">&quot;failure&quot;</span>),
+                 <span class="dt">linear.terms=</span><span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),
+                 <span class="dt">smooth.terms=</span><span class="kw">paste0</span>(<span class="st">&quot;z&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                 <span class="dt">data=</span>simData,
+                 <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>,
+                 <span class="dt">linear.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                 <span class="dt">smooth.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                 <span class="dt">num.knots =</span> <span class="dv">5</span>,
+                 <span class="dt">seed=</span><span class="dv">1</span>)</code></pre></div>
+<p>As in the <a href="#exbernoulli">Bernoulli Example</a> we can evalute the <code>summary</code>, plot the smooth terms and compare predicted probabilities to underlying truth (not evaluated):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(bfit2)
+<span class="kw">plot</span>(bfit2<span class="op">$</span>gam, <span class="dt">pages=</span><span class="dv">1</span>)
+pred.prob &lt;-<span class="st"> </span><span class="kw">predict</span>(bfit2, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+true.prob &lt;-<span class="st"> </span><span class="kw">exp</span>(simData<span class="op">$</span>lp)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(simData<span class="op">$</span>lp))
+<span class="kw">plot</span>(pred.prob, true.prob, <span class="dt">xlab=</span><span class="st">&quot;predicted probability&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;true probability&quot;</span>)</code></pre></div>
+</div>
+<div id="cox-gamlasso-with-plsmselect" class="section level3">
+<h3>Cox GAMLASSO with <code>plsmselect</code></h3>
+In this section we fit a Cox regression model to the censored event <code>time</code> variable from <code>simData</code> (<code>status</code>=1 if event is observed, 0 if censored):
+<span class="math display">\[\begin{align}
+\lambda(t) = \lambda_0(t) \exp \left( \beta_0 + X \beta + \sum_{j=1}^4 f_j(z_j) \right),
+\end{align}\]</span>
+<p>where both <span class="math inline">\(\beta\)</span> and the <span class="math inline">\(f_j\)</span>’s are subject to <span class="math inline">\(\ell_1\)</span> penalties.</p>
+<p>We fit the above Cox GAMLASSO model using the formula approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Create model matrix X corresponding to linear terms
+## (necessary for the formula option of gamlasso below)
+simData<span class="op">$</span>X =<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>x1<span class="op">+</span>x2<span class="op">+</span>x3<span class="op">+</span>x4<span class="op">+</span>x5<span class="op">+</span>x6<span class="op">+</span>x7<span class="op">+</span>x8<span class="op">+</span>x9<span class="op">+</span>x10, <span class="dt">data=</span>simData)[,<span class="op">-</span><span class="dv">1</span>]
+
+<span class="co"># Censored time-to-event response. Formula approach.</span>
+cfit =<span class="st"> </span><span class="kw">gamlasso</span>(time <span class="op">~</span><span class="st"> </span>X <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z1, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z2, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z3, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>) <span class="op">+</span>
+<span class="st">                  </span><span class="kw">s</span>(z4, <span class="dt">bs=</span><span class="st">&quot;ts&quot;</span>, <span class="dt">k=</span><span class="dv">5</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">family =</span> <span class="st">&quot;cox&quot;</span>,
+                <span class="dt">weights =</span> <span class="st">&quot;status&quot;</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>or alternatively using the term specification approach:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Censored time-to-event response. Term specification approach.</span>
+cfit =<span class="st"> </span><span class="kw">gamlasso</span>(<span class="dt">response =</span> <span class="st">&quot;time&quot;</span>,
+                <span class="dt">linear.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),
+                <span class="dt">smooth.terms =</span> <span class="kw">paste0</span>(<span class="st">&quot;z&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>),
+                <span class="dt">data =</span> simData,
+                <span class="dt">linear.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">smooth.penalty =</span> <span class="st">&quot;l1&quot;</span>,
+                <span class="dt">family =</span> <span class="st">&quot;cox&quot;</span>,
+                <span class="dt">weights=</span><span class="st">&quot;status&quot;</span>,
+                <span class="dt">num.knots =</span> <span class="dv">5</span>,
+                <span class="dt">seed =</span> <span class="dv">1</span>)</code></pre></div>
+<p>Once the model is fit we can perform similar diagnostics as in the Gaussian, Poisson, Bernoulli and Binomial examples above. But in addition since this is a survival model we can also estimate the hazard function. In particular the function <code>cumbasehaz</code> will output the estimated cumulative baseline hazard function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Obtain and plot predicted cumulative baseline hazard:
+H0.pred &lt;-<span class="st"> </span><span class="kw">cumbasehaz</span>(cfit)
+
+time.seq &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">60</span>, <span class="dt">by=</span><span class="dv">1</span>)
+<span class="kw">plot</span>(time.seq, <span class="kw">H0.pred</span>(time.seq), <span class="dt">type=</span><span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Time&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>,
+     <span class="dt">main =</span> <span class="st">&quot;Predicted Cumulative </span><span class="ch">\n</span><span class="st">Baseline Hazard&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>We can predict the survival probability <span class="math inline">\(S(t)=P(T&gt;t)\)</span> for each sample at a single or a sequence of event times <span class="math inline">\(t\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Obtain predicted survival at days 1,2,3,...,60:
+S.pred &lt;-<span class="st"> </span><span class="kw">predict</span>(cfit, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>, <span class="dt">new.event.times=</span><span class="dv">1</span><span class="op">:</span><span class="dv">60</span>)
+
+## Plot the survival curve for sample (subject) 17:
+<span class="kw">plot</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">60</span>, S.pred[<span class="dv">17</span>,], <span class="dt">xlab=</span><span class="st">&quot;time (in days)&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Survival probability&quot;</span>, <span class="dt">type=</span><span class="st">&quot;l&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>Note that the object <code>S.pred</code> above is a matrix whose rows are samples (subjects) and columns are the new event times (at which survival probabilities are calculated).</p>
+</div>
+</div>
+<div id="appendix" class="section level2">
+<h2>A. Appendix</h2>
+<div id="data-simulation-details" class="section level3">
+<h3>Data simulation (details)</h3>
+<p>We provide below the code that was used to generate <code>simData</code>. Note that due to simulation using different seeds the output from the code (<code>simData2</code>) below may not exactly match <code>data(simData)</code>.</p>
+<p><strong>Simulate covariates:</strong></p>
+<p>We first simulate the covariate predictors with the helper function <code>generate.inputdata</code> below. We simulate <span class="math inline">\(N=100\)</span> samples of <span class="math inline">\(10\)</span> binary (linear) predictors <span class="math inline">\(x_1,\dots,x_{10}\)</span> and <span class="math inline">\(4\)</span> continuous (smooth) predictors <span class="math inline">\(z_1,\dots,z_4\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">generate.inputdata &lt;-<span class="st"> </span><span class="cf">function</span>(N) {
+  
+  id &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;i&quot;</span>,<span class="dv">1</span><span class="op">:</span>N)
+  ## Define linear predictors
+  linear.pred &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="kw">rbinom</span>(N<span class="op">*</span><span class="dv">3</span>,<span class="dt">size=</span><span class="dv">1</span>,<span class="dt">prob=</span><span class="fl">0.2</span>),
+                          <span class="kw">rbinom</span>(N<span class="op">*</span><span class="dv">5</span>,<span class="dt">size=</span><span class="dv">1</span>,<span class="dt">prob=</span><span class="fl">0.5</span>),
+                          <span class="kw">rbinom</span>(N<span class="op">*</span><span class="dv">2</span>,<span class="dt">size=</span><span class="dv">1</span>,<span class="dt">prob=</span><span class="fl">0.9</span>)),
+                        <span class="dt">nrow=</span>N)
+  <span class="kw">colnames</span>(linear.pred) =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(linear.pred))
+  
+  ## Define smooth predictors
+  smooth.pred =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">matrix</span>(<span class="kw">runif</span>(N<span class="op">*</span><span class="dv">4</span>),<span class="dt">nrow=</span>N))
+  <span class="kw">colnames</span>(smooth.pred) =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;z&quot;</span>, <span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(smooth.pred))
+  
+  ## Coalesce the predictors
+  dat =<span class="st"> </span><span class="kw">cbind.data.frame</span>(id, linear.pred, smooth.pred)
+  
+  <span class="kw">return</span>(dat)
+  
+}
+
+## Simulate N input data observations:
+N &lt;-<span class="st"> </span><span class="dv">100</span>
+simData2 &lt;-<span class="st"> </span><span class="kw">generate.inputdata</span>(N)</code></pre></div>
+<p>We encourage the user to change <code>N</code> to a higher number (e.g. <span class="math inline">\(N=1000\)</span>) and rerun the code in the <a href="#examples">Examples</a> section with the new <code>simData2</code> in order to get a better model fit.</p>
+<p><strong>Calculate “true” linear predictor:</strong></p>
+<p>In all below simulations (of the various response types <code>gaussian</code>, <code>binomial</code>, <code>poisson</code>, and <code>cox</code>) we will assume that the “true” underlying linear predictor is <span class="math display">\[
+l_p = x_1-0.6x_2+0.5x_3+z_1^3 + \sin(\pi \cdot z_2),
+\]</span> i.e. we assume that the linear parameters associated with <span class="math inline">\(x_1,\dots,x_{10}\)</span> are respectively <span class="math inline">\(\beta_1=1\)</span>, <span class="math inline">\(\beta_2=-0.6\)</span>, <span class="math inline">\(\beta_3=0.5\)</span>, <span class="math inline">\(\beta_4=\cdots=\beta_{10}=0\)</span> and the functional relationships between <span class="math inline">\(l_p\)</span> and <span class="math inline">\(z_1,\dots,z_4\)</span> are respectively <span class="math inline">\(f_1(z)=z^3\)</span>, <span class="math inline">\(f_2(z)=\sin(\pi\cdot z)\)</span>, <span class="math inline">\(f_3(z)=f_4(z)=0\)</span>. The below R code calculates the “true” linear predictor based on the above formula.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## &quot;True&quot; coefficients of linear terms (last 7 are zero):
+beta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="fl">0.5</span>, <span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">7</span>))
+
+## &quot;True&quot; nonlinear smooth terms:
+f1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">^</span><span class="dv">3</span>
+f2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">sin</span>(x<span class="op">*</span>pi)
+
+## Calculate &quot;True&quot; linear predictor (lp) based on above data (simData2)
+simData2<span class="op">$</span>lp &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.matrix</span>(simData2[,<span class="kw">paste0</span>(<span class="st">&quot;x&quot;</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)]) <span class="op">%*%</span><span class="st"> </span>beta <span class="op">+</span><span class="st"> </span><span class="kw">f1</span>(simData2<span class="op">$</span>z1) <span class="op">+</span><span class="st"> </span><span class="kw">f2</span>(simData2<span class="op">$</span>z2))</code></pre></div>
+<p><strong>Simulate Gaussian, Bernoulli, and Poisson responses:</strong></p>
+We then go on and simulate <code>gaussian</code>, <code>bernoulli</code>, and <code>poisson</code> responses assuming the above linear predictor as ground truth: 
+<span class="math display">\[\begin{align}
+Y_g &amp;\sim N(\mu,\sigma^2), &amp;&amp;\mu=l_p, \sigma=0.1, \\
+Y_b &amp;\sim Bernoulli(p), &amp;&amp;\log\left(\frac{p}{1-p}\right)=l_p, \\
+Y_p &amp;\sim Poi(\lambda), &amp;&amp;\log(\lambda) = l_p,
+\end{align}\]</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Simulate gaussian response with mean lp:
+simData2<span class="op">$</span>Yg =<span class="st"> </span>simData2<span class="op">$</span>lp <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N, <span class="dt">sd =</span> <span class="fl">0.1</span>)
+
+## Simulate bernoulli trials with success probability exp(lp)/(1+exp(lp))
+simData2<span class="op">$</span>Yb =<span class="st"> </span><span class="kw">map_int</span>(<span class="kw">exp</span>(simData2<span class="op">$</span>lp), <span class="op">~</span><span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dt">p =</span> ( .<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>.) ) ) )
+
+## Simulate Poisson response with log(mean) = lp
+simData2<span class="op">$</span>Yp =<span class="st"> </span><span class="kw">map_int</span>(<span class="kw">exp</span>(simData2<span class="op">$</span>lp), <span class="op">~</span><span class="kw">rpois</span>(<span class="dv">1</span>, .) )</code></pre></div>
+<p><strong>Simulate Binomial counts:</strong></p>
+We then simulate binomial success/failure counts (with varying count totals <span class="math inline">\(n\)</span> also simulated) assuming the above linear predictor as ground truth: 
+<span class="math display">\[\begin{align}
+n &amp;\sim unif\{1,\dots,10\}, \\
+success &amp;\sim Binomial(n, p), \\ 
+failure &amp;= n - success,
+\end{align}\]</span>
+<p>where <span class="math inline">\(p = \exp(l_p)/(1+\exp(l_p))\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Simulate binomial counts with success probability exp(lp)/(1+exp(lp))
+sizes =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">10</span>, <span class="kw">nrow</span>(simData2), <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+<span class="co"># Simulate success:</span>
+simData2<span class="op">$</span>success =<span class="st"> </span><span class="kw">map2_int</span>(<span class="kw">exp</span>(simData2<span class="op">$</span>lp), sizes, <span class="op">~</span><span class="kw">rbinom</span>(<span class="dv">1</span>, .y, <span class="dt">p =</span> ( .x<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>.x) )))
+<span class="co"># Calculate failure:</span>
+simData2<span class="op">$</span>failure =<span class="st"> </span>sizes <span class="op">-</span><span class="st"> </span>simData2<span class="op">$</span>success</code></pre></div>
+<p><strong>Simulate time-to-event response from Weibull model:</strong></p>
+Finally we simulate censored event times <span class="math inline">\(T\)</span> according to a Cox regression model with exponential baseline hazard (i.e. baseline hazard function is constant), assuming the above linear predictor as ground truth. The censoring times <span class="math inline">\(C\)</span> are also simulated according to an exponential distribution. 
+<span class="math display">\[\begin{align}
+T &amp;\sim Exp(\lambda(t)), \textrm{ } \lambda(t)=\lambda_0 e^{l_p}, \nonumber \\
+C &amp;\sim Exp(\lambda_C)
+\end{align}\]</span>
+<p>The censoring variable is then defined as <span class="math inline">\(status=1(T \geq C)\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Function that simulates N samples of censored event times (time, status)
+## Event times ~ Weibull(lambda0, rho) with linear predictor lp
+## rho=1 corresponds to exponential distribution
+simulWeib &lt;-<span class="st"> </span><span class="cf">function</span>(N, lambda0, rho, lp)
+{
+  
+  <span class="co"># Censoring times ~ Exponential(lambdaC)</span>
+  lambdaC=<span class="fl">0.0005</span> <span class="co"># very mild censoring</span>
+  
+  <span class="co"># Simulate Weibull latent event times</span>
+  v &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dt">n=</span>N)
+  Tlat &lt;-<span class="st"> </span>(<span class="op">-</span><span class="st"> </span><span class="kw">log</span>(v) <span class="op">/</span><span class="st"> </span>(lambda0 <span class="op">*</span><span class="st"> </span><span class="kw">exp</span>(lp)))<span class="op">^</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span>rho)
+  
+  <span class="co"># Simulate censoring times</span>
+  C &lt;-<span class="st"> </span><span class="kw">rexp</span>(<span class="dt">n=</span>N, <span class="dt">rate=</span>lambdaC)
+  
+  <span class="co"># Calculate follow-up times and event indicators</span>
+  time &lt;-<span class="st"> </span><span class="kw">pmin</span>(Tlat, C)
+  status &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(Tlat <span class="op">&lt;=</span><span class="st"> </span>C)
+  
+  <span class="kw">data.frame</span>(<span class="dt">time=</span>time, <span class="dt">status=</span>status)
+  
+}
+
+## Set parameters of Weibull baseline hazard h0(t) = lambda*rho*t^(rho-1):
+lambda0 &lt;-<span class="st"> </span><span class="fl">0.01</span>; rho &lt;-<span class="st"> </span><span class="dv">1</span>;
+
+## Simulate (times, status) from above censored Weibull model and cbind to our data:
+simData2 &lt;-<span class="st"> </span><span class="kw">cbind.data.frame</span>(simData2, <span class="kw">simulWeib</span>(N, lambda0, rho, simData2<span class="op">$</span>lp))</code></pre></div>
+<!-- An application section and a conclusion section should be included for Journal of Statistical Software -->
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-gamsel">
+<p>Chouldechova, Alexandra, and Trevor Hastie. 2015. “Generalized Additive Model Selection.” <em>arXiv:1506.03850</em>.</p>
+</div>
+<div id="ref-gamselRpackage">
+<p>Chouldechova, Alexandra, Trevor Hastie, and Vitalie Spinu. 2018. <em>Gamsel: Fit Regularization Path for Generalized Additive Models</em>.</p>
+</div>
+<div id="ref-glmnetRpackage">
+<p>Friedman, J., T. Hastie, R. Tibshirani, N. Simon, B. Narasimhan, and J. Qian. 2019. <em>Glmnet: Lasso and Elastic-Net Regularized Generalized Linear Models</em>.</p>
+</div>
+<div id="ref-mgcvRpackage">
+<p>Wood, Simon. 2019. <em>Mgcv: Mixed Gam Computation Vehicle with Automatic Smoothness Estimation</em>.</p>
+</div>
+<div id="ref-wood2003thin">
+<p>Wood, Simon N. 2003. “Thin Plate Regression Splines.” <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 65 (1). Wiley Online Library: 95–114.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
