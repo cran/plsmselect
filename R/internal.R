@@ -1,4 +1,4 @@
-## SECONDARY FUNCTIONS
+## SECONDARY INTERNAL FUNCTIONS
 
 #' Internal Function
 #'
@@ -134,7 +134,7 @@ formula_setup = function(formula = NULL, response.name = NULL, linear.name = NUL
   }
 
   formulae = list(response = r.formula, linear = l.formula,
-                 smooth = s.formula, offset = o.formula)
+                  smooth = s.formula, offset = o.formula)
   return(formulae)
 }
 
@@ -258,9 +258,9 @@ lasso_gam_loop = function(data, response.name, families, formulae,
   }
 
 
-  lasso.pred = glmnet::predict.cv.glmnet(cv.lasso.model, newx=xmat, s="lambda.min",
-                                         newoffset=0) %>% as.numeric()
-  lasso.coefs = glmnet::coef.cv.glmnet(cv.lasso.model, s="lambda.min") %>% as.numeric()
+  lasso.pred = stats::predict(cv.lasso.model, newx=xmat, s="lambda.min",
+                              newoffset=0) %>% as.numeric()
+  lasso.coefs = stats::coef(cv.lasso.model, s="lambda.min") %>% as.numeric()
 
   # glmnet prediction include offset
   # but suppressed by newoffset=0
@@ -302,9 +302,9 @@ lasso_gam_loop = function(data, response.name, families, formulae,
                                    family=families$lasso_family, maxit=1000)
     }
 
-    new.lasso.pred = glmnet::predict.cv.glmnet(cv.lasso.model, newx=xmat,
-                                               s="lambda.min", newoffset=0) %>% as.numeric()
-    new.lasso.coefs = glmnet::coef.cv.glmnet(cv.lasso.model, s="lambda.min") %>% as.numeric()
+    new.lasso.pred = stats::predict(cv.lasso.model, newx=xmat,
+                                    s="lambda.min", newoffset=0) %>% as.numeric()
+    new.lasso.coefs = stats::coef(cv.lasso.model, s="lambda.min") %>% as.numeric()
 
     off = new.lasso.pred + train.offset
 

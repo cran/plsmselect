@@ -21,7 +21,6 @@ This is only used when with family="cox"
 }
 \examples{
 library(plsmselect)
-library(tidyverse)
 
 data(simData)
 

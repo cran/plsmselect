@@ -30,7 +30,6 @@ Outputs a list of two. \code{gam} prints a summary of the
 }
 \examples{
 library(plsmselect)
-library(tidyverse)
 
 data(simData)
 

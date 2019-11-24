@@ -68,10 +68,10 @@ When we are fitting a model with $\ell_1$ penalty on the linear coefficients $\b
 * $offset = 0$ 
 
 * **_loop until convergence_** of the fitted values
-    + Fit $Y \sim \beta_0 + \sum_{j=1}^q f_j(Z_j) + offset$ with either $\ell_1$ or $\ell_2$ penalty on $f_j$'s.  
++ Fit $Y \sim \beta_0 + \sum_{j=1}^q f_j(Z_j) + offset$ with either $\ell_1$ or $\ell_2$ penalty on $f_j$'s.  
 Set $offset \leftarrow \hat{\beta}_0 + \sum_{j=1}^q \hat{f_j}(Z_j)$
 
-    + Fit $Y \sim X \beta + offset$ with $\ell_1$ penalty on $\beta$.  
++ Fit $Y \sim X \beta + offset$ with $\ell_1$ penalty on $\beta$.  
 Set $offset \leftarrow X \hat{\beta}$.
 
 ***
@@ -128,8 +128,8 @@ In the next subsection we will describe the simulated example data set. After th
 `plsmselect` comes with a simulated toy data set that we will use to demonstrate package functionalities. This data set `simData` will be used in all below analyses.  
 
 ```{r}
-library(tidyverse)
 library(plsmselect)
+library(purrr)
 
 data(simData)
 ```

@@ -28,7 +28,7 @@ print.gamlasso = function(x, ...)
   print_lasso = print_gam = NULL
   if(!is.null(x$cv.glmnet))
   {
-    print_lasso = glmnet::print.glmnet(x$cv.glmnet$glmnet.fit)
+    print_lasso = print(x$cv.glmnet$glmnet.fit)
   }
 
   if(!is.null(x$gam))
@@ -69,7 +69,6 @@ print.gamlasso = function(x, ...)
 #'
 #' @examples
 #' library(plsmselect)
-#' library(tidyverse)
 #'
 #' data(simData)
 #'
@@ -121,7 +120,7 @@ summary.gamlasso = function(object, s = "lambda.min", ...)
   summary_lasso = summary_gam = NULL
   if(!is.null(object$cv.glmnet))
   {
-    summary_lasso = glmnet::coef.cv.glmnet(object$cv.glmnet, s = s)
+    summary_lasso = stats::coef(object$cv.glmnet, s = s)
   }
 
   if(!is.null(object$gam))
@@ -190,7 +189,6 @@ summary.gamlasso = function(object, s = "lambda.min", ...)
 #' @importFrom dplyr pull
 #' @examples
 #' library(plsmselect)
-#' library(tidyverse)
 #'
 #' data(simData)
 #'
@@ -266,9 +264,9 @@ predict.gamlasso = function(object, newdata = NULL, type = "link", s = "lambda.m
     test.xmat = model.matrix(as.formula(paste("~", object$inherit$formulae$linear,
                                               object$inherit$formulae$offset)),
                              data = test.data)
-    Xbeta.linear = glmnet::predict.cv.glmnet(object$cv.glmnet,
-                                             newx = test.xmat, s = s,
-                                             type = "link", newoffset = test.offset)
+    Xbeta.linear = stats::predict(object$cv.glmnet,
+                                  newx = test.xmat, s = s,
+                                  type = "link", newoffset = test.offset)
   }
   else
   {
@@ -283,9 +281,9 @@ predict.gamlasso = function(object, newdata = NULL, type = "link", s = "lambda.m
       ## Xbeta.final. But in case there is ony gam fitted then that has
       ## offset in the formula so it will be included in the predict
       ## already leading to double offset adding
-      Xbeta.linear = glmnet::predict.cv.glmnet(object$cv.glmnet,
-                                               newx = test.xmat, s = s,
-                                               type = "link", newoffset = test.offset)
+      Xbeta.linear = stats::predict(object$cv.glmnet,
+                                    newx = test.xmat, s = s,
+                                    type = "link", newoffset = test.offset)
     }
   }
 
@@ -425,15 +423,3 @@ predict.gamlasso = function(object, newdata = NULL, type = "link", s = "lambda.m
 ##     }
 ##   }
 ## }
-
-
-
-
-
-
-
-
-
-
-
-

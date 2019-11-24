@@ -7,12 +7,13 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Indrayudh Ghosal and Matthias Kormaksson" />
 
-<meta name="date" content="2019-07-16" />
+<meta name="date" content="2019-11-24" />
 
 <title>The plsmselect package</title>
 
@@ -71,7 +72,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -96,7 +97,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">The plsmselect package</h1>
 <h4 class="author">Indrayudh Ghosal and Matthias Kormaksson</h4>
-<h4 class="date">July 16, 2019</h4>
+<h4 class="date">November 24, 2019</h4>
 
 
 
@@ -156,13 +157,11 @@ The package also fits generalized additive models for survival data whose models
 <hr />
 <ul>
 <li><p><span class="math inline">\(offset = 0\)</span></p></li>
-<li><strong><em>loop until convergence</em></strong> of the fitted values
-<ul>
+<li><strong><em>loop until convergence</em></strong> of the fitted values</li>
 <li><p>Fit <span class="math inline">\(Y \sim \beta_0 + \sum_{j=1}^q f_j(Z_j) + offset\)</span> with either <span class="math inline">\(\ell_1\)</span> or <span class="math inline">\(\ell_2\)</span> penalty on <span class="math inline">\(f_j\)</span>’s.<br />
 Set <span class="math inline">\(offset \leftarrow \hat{\beta}_0 + \sum_{j=1}^q \hat{f_j}(Z_j)\)</span></p></li>
 <li><p>Fit <span class="math inline">\(Y \sim X \beta + offset\)</span> with <span class="math inline">\(\ell_1\)</span> penalty on <span class="math inline">\(\beta\)</span>.<br />
 Set <span class="math inline">\(offset \leftarrow X \hat{\beta}\)</span>.</p></li>
-</ul></li>
 </ul>
 <hr />
 <p>We can think of this approach as a <strong>block coordinate descent algorithm</strong>. The first block having the intercept <span class="math inline">\(\beta_0\)</span> and the linear coefficients of the basis functions corresponding to the the smooth functions <span class="math inline">\(f_j\)</span> (more details in the <a href="#background">background</a> section). The second block containing the <span class="math inline">\(\beta\)</span>’s corresponding to the linear predictors. The former block is implemented by invoking the <code>mgcv</code> package while the latter is implemented with <code>glmnet</code>.</p>
@@ -198,8 +197,8 @@ Y = f_1(X_1) + f_2(X_2) + \dots + \epsilon
 <div id="simulated-dataset" class="section level3">
 <h3>Simulated dataset</h3>
 <p><code>plsmselect</code> comes with a simulated toy data set that we will use to demonstrate package functionalities. This data set <code>simData</code> will be used in all below analyses.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
-<span class="kw">library</span>(plsmselect)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(plsmselect)
+<span class="kw">library</span>(purrr)
 
 <span class="kw">data</span>(simData)</code></pre></div>
 <table class="table table-striped" style="font-size: 11.5px; margin-left: auto; margin-right: auto;">
@@ -1136,6 +1135,9 @@ simData2 &lt;-<span class="st"> </span><span class="kw">cbind.data.frame</span>(
 </div>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

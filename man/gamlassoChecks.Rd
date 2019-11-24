@@ -4,9 +4,22 @@
 \alias{gamlassoChecks}
 \title{Checking data before fitting gamlasso}
 \usage{
-gamlassoChecks(data, response.name, linear.name, smooth.name, family,
-  linear.penalty, smooth.penalty, offset.name, weights.name, num.knots,
-  num.iter, tolerance, seed, prompts)
+gamlassoChecks(
+  data,
+  response.name,
+  linear.name,
+  smooth.name,
+  family,
+  linear.penalty,
+  smooth.penalty,
+  offset.name,
+  weights.name,
+  num.knots,
+  num.iter,
+  tolerance,
+  seed,
+  prompts
+)
 }
 \arguments{
 \item{data}{The training data for fitting the model}

@@ -125,7 +125,6 @@
 #'
 #' @examples
 #' library(plsmselect)
-#' library(tidyverse)
 #'
 #' data(simData)
 #'

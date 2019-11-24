@@ -4,8 +4,14 @@
 \alias{predict.gamlasso}
 \title{Prediction from a fitted gamlasso model}
 \usage{
-\method{predict}{gamlasso}(object, newdata = NULL, type = "link",
-  s = "lambda.min", new.event.times = NULL, ...)
+\method{predict}{gamlasso}(
+  object,
+  newdata = NULL,
+  type = "link",
+  s = "lambda.min",
+  new.event.times = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{fitted model object of the class \code{gamlasso} as
@@ -57,7 +63,6 @@ Lasso models do not have standard errors so \code{predict.gamlasso}
 }
 \examples{
 library(plsmselect)
-library(tidyverse)
 
 data(simData)
 

@@ -4,10 +4,17 @@
 \alias{formula_setup}
 \title{Internal Function}
 \usage{
-formula_setup(formula = NULL, response.name = NULL,
-  linear.name = NULL, smooth.name = NULL, family = NULL,
-  smooth.penalty = NULL, num.knots = NULL, offset.name = NULL,
-  interactions = F)
+formula_setup(
+  formula = NULL,
+  response.name = NULL,
+  linear.name = NULL,
+  smooth.name = NULL,
+  family = NULL,
+  smooth.penalty = NULL,
+  num.knots = NULL,
+  offset.name = NULL,
+  interactions = F
+)
 }
 \arguments{
 \item{formula}{A formula to be parsed}

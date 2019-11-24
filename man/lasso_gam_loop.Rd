@@ -4,8 +4,17 @@
 \alias{lasso_gam_loop}
 \title{Internal Function}
 \usage{
-lasso_gam_loop(data, response.name, families, formulae, num.iter,
-  tolerance, offset.name, weights, seed)
+lasso_gam_loop(
+  data,
+  response.name,
+  families,
+  formulae,
+  num.iter,
+  tolerance,
+  offset.name,
+  weights,
+  seed
+)
 }
 \arguments{
 \item{data}{The data with value for all the linear and smooth predictors}

@@ -1,25 +1,25 @@
-## ----setup, include=FALSE------------------------------------------------
+## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(message=F, warning = F, cache=T, echo=T, eval=T,
                       fig.pos="H", fig.align="center", comment='#>')
 
-## ---- echo=FALSE---------------------------------------------------------
+## ---- echo=FALSE--------------------------------------------------------------
 tab <- matrix(c("\u2713","",rep("\u2713",4)),2,3)
 rownames(tab) = c("$\\beta$","$f_j$'s")
 colnames(tab) = c("None","$\\ell_1$","$\\ell_2$")
 knitr::kable(tab, align = "rccc")
 
-## ------------------------------------------------------------------------
-library(tidyverse)
+## -----------------------------------------------------------------------------
 library(plsmselect)
+library(purrr)
 
 data(simData)
 
-## ---- echo=FALSE---------------------------------------------------------
+## ---- echo=FALSE--------------------------------------------------------------
 knitr::kable(head(simData), format = "html", digits=2,
              caption="Table 1. First 6 samples of the simulated data set: simData.") %>% 
   kableExtra::kable_styling(bootstrap_options = "striped", font_size = 11.5)
 
-## ----normalfit-----------------------------------------------------------
+## ----normalfit----------------------------------------------------------------
 ## Create model matrix X corresponding to linear terms
 ## (necessary for the formula option of gamlasso below)
 simData$X = model.matrix(~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, data=simData)[,-1]
@@ -33,7 +33,7 @@ gfit = gamlasso(Yg ~ X +
                 data = simData,
                 seed = 1)
 
-## ----normalfitalt, eval = F----------------------------------------------
+## ----normalfitalt, eval = F---------------------------------------------------
 #  ## The term specification approach
 #  gfit = gamlasso(response = "Yg",
 #                  linear.terms = paste0("x",1:10),
@@ -44,24 +44,24 @@ gfit = gamlasso(Yg ~ X +
 #                  num.knots = 5,
 #                  seed = 1)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 # mgcv::gam object:
 class(gfit$gam)
 # glmnet::cv.glmnet object
 class(gfit$cv.glmnet)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 summary(gfit)
 
-## ----plotgam, fig.width=6, fig.height=6----------------------------------
+## ----plotgam, fig.width=6, fig.height=6---------------------------------------
 ## Plot the estimates of the smooth effects:
 plot(gfit$gam, pages=1)
 
-## ----fittedvsobserved, fig.width=6, fig.height=6-------------------------
+## ----fittedvsobserved, fig.width=6, fig.height=6------------------------------
 ## Plot fitted versus observed values:
 plot(simData$Yg, predict(gfit), xlab = "Observed values", ylab = "Fitted Values")
 
-## ----poifit--------------------------------------------------------------
+## ----poifit-------------------------------------------------------------------
 ## Create model matrix X corresponding to linear terms
 ## (necessary for the formula option of gamlasso below)
 simData$X = model.matrix(~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, data=simData)[,-1]
@@ -76,7 +76,7 @@ pfit = gamlasso(Yp ~ X +
                 family = "poisson",
                 seed = 1)
 
-## ----poifitalt, eval=FALSE-----------------------------------------------
+## ----poifitalt, eval=FALSE----------------------------------------------------
 #  ## Poisson response. Term-specification approach.
 #  pfit = gamlasso(response = "Yp",
 #                  linear.terms = paste0("x",1:10),
@@ -88,18 +88,18 @@ pfit = gamlasso(Yp ~ X +
 #                  num.knots = 5,
 #                  seed = 1)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 coef(pfit$cv.glmnet, s="lambda.min")
 
-## ---- fig.width=6, fig.height=3------------------------------------------
+## ---- fig.width=6, fig.height=3-----------------------------------------------
 par(mfrow=c(1,2))
 plot(pfit$gam, select=1) # estimate of smooth term z1
 plot(pfit$gam, select=2) # estimate of smooth term z2
 
-## ---- fig.width=6, fig.height=6------------------------------------------
+## ---- fig.width=6, fig.height=6-----------------------------------------------
 plot(predict(pfit, type="response"), exp(simData$lp), xlab="predicted count", ylab="true expected count")
 
-## ----binfit, eval=FALSE--------------------------------------------------
+## ----binfit, eval=FALSE-------------------------------------------------------
 #  ## Create model matrix X corresponding to linear terms
 #  ## (necessary for the formula option of gamlasso below)
 #  simData$X = model.matrix(~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, data=simData)[,-1]
@@ -114,7 +114,7 @@ plot(predict(pfit, type="response"), exp(simData$lp), xlab="predicted count", yl
 #                  family = "binomial",
 #                  seed = 1)
 
-## ----binfitalt, eval = F-------------------------------------------------
+## ----binfitalt, eval = F------------------------------------------------------
 #  ## The term specification approach
 #  bfit = gamlasso(response = "Yb",
 #                  linear.terms = paste0("x",1:10),
@@ -126,14 +126,14 @@ plot(predict(pfit, type="response"), exp(simData$lp), xlab="predicted count", yl
 #                  num.knots = 5,
 #                  seed = 1)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  summary(bfit)
 #  plot(bfit$gam, pages=1)
 #  pred.prob <- predict(bfit, type="response")
 #  true.prob <- exp(simData$lp)/(1+exp(simData$lp))
 #  plot(pred.prob, true.prob, xlab="predicted probability", ylab="true probability")
 
-## ----binomfit, eval=FALSE------------------------------------------------
+## ----binomfit, eval=FALSE-----------------------------------------------------
 #  ## Create model matrix X corresponding to linear terms
 #  ## (necessary for the formula option of gamlasso below)
 #  simData$X = model.matrix(~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, data=simData)[,-1]
@@ -148,7 +148,7 @@ plot(predict(pfit, type="response"), exp(simData$lp), xlab="predicted count", yl
 #                   family = "binomial",
 #                   seed = 1)
 
-## ----binomfitalt, eval = F-----------------------------------------------
+## ----binomfitalt, eval = F----------------------------------------------------
 #  ## Binomial counts response. Term specification approach
 #  bfit2 = gamlasso(c("success","failure"),
 #                   linear.terms=paste0("x",1:10),
@@ -160,14 +160,14 @@ plot(predict(pfit, type="response"), exp(simData$lp), xlab="predicted count", yl
 #                   num.knots = 5,
 #                   seed=1)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  summary(bfit2)
 #  plot(bfit2$gam, pages=1)
 #  pred.prob <- predict(bfit2, type="response")
 #  true.prob <- exp(simData$lp)/(1+exp(simData$lp))
 #  plot(pred.prob, true.prob, xlab="predicted probability", ylab="true probability")
 
-## ----coxfit--------------------------------------------------------------
+## ----coxfit-------------------------------------------------------------------
 ## Create model matrix X corresponding to linear terms
 ## (necessary for the formula option of gamlasso below)
 simData$X = model.matrix(~x1+x2+x3+x4+x5+x6+x7+x8+x9+x10, data=simData)[,-1]
@@ -183,7 +183,7 @@ cfit = gamlasso(time ~ X +
                 weights = "status",
                 seed = 1)
 
-## ----coxfitalt, eval=FALSE-----------------------------------------------
+## ----coxfitalt, eval=FALSE----------------------------------------------------
 #  # Censored time-to-event response. Term specification approach.
 #  cfit = gamlasso(response = "time",
 #                  linear.terms = paste0("x",1:10),
@@ -196,7 +196,7 @@ cfit = gamlasso(time ~ X +
 #                  num.knots = 5,
 #                  seed = 1)
 
-## ----coxdiagnos, fig.width=6, fig.height=6-------------------------------
+## ----coxdiagnos, fig.width=6, fig.height=6------------------------------------
 ## Obtain and plot predicted cumulative baseline hazard:
 H0.pred <- cumbasehaz(cfit)
 
@@ -204,14 +204,14 @@ time.seq <- seq(0, 60, by=1)
 plot(time.seq, H0.pred(time.seq), type="l", xlab = "Time", ylab="",
      main = "Predicted Cumulative \nBaseline Hazard")
 
-## ----coxpredict, fig.width=6, fig.height=6-------------------------------
+## ----coxpredict, fig.width=6, fig.height=6------------------------------------
 ## Obtain predicted survival at days 1,2,3,...,60:
 S.pred <- predict(cfit, type="response", new.event.times=1:60)
 
 ## Plot the survival curve for sample (subject) 17:
 plot(1:60, S.pred[17,], xlab="time (in days)", ylab="Survival probability", type="l")
 
-## ----simdata, eval=FALSE-------------------------------------------------
+## ----simdata, eval=FALSE------------------------------------------------------
 #  generate.inputdata <- function(N) {
 #  
 #    id <- paste0("i",1:N)
@@ -237,7 +237,7 @@ plot(1:60, S.pred[17,], xlab="time (in days)", ylab="Survival probability", type
 #  N <- 100
 #  simData2 <- generate.inputdata(N)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  ## "True" coefficients of linear terms (last 7 are zero):
 #  beta <- c(1, -0.6, 0.5, rep(0,7))
 #  
@@ -248,7 +248,7 @@ plot(1:60, S.pred[17,], xlab="time (in days)", ylab="Survival probability", type
 #  ## Calculate "True" linear predictor (lp) based on above data (simData2)
 #  simData2$lp <- as.numeric(as.matrix(simData2[,paste0("x",1:10)]) %*% beta + f1(simData2$z1) + f2(simData2$z2))
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  ## Simulate gaussian response with mean lp:
 #  simData2$Yg = simData2$lp + rnorm(N, sd = 0.1)
 #  
@@ -258,7 +258,7 @@ plot(1:60, S.pred[17,], xlab="time (in days)", ylab="Survival probability", type
 #  ## Simulate Poisson response with log(mean) = lp
 #  simData2$Yp = map_int(exp(simData2$lp), ~rpois(1, .) )
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  ## Simulate binomial counts with success probability exp(lp)/(1+exp(lp))
 #  sizes = sample(10, nrow(simData2), replace = TRUE)
 #  # Simulate success:
@@ -266,7 +266,7 @@ plot(1:60, S.pred[17,], xlab="time (in days)", ylab="Survival probability", type
 #  # Calculate failure:
 #  simData2$failure = sizes - simData2$success
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  ## Function that simulates N samples of censored event times (time, status)
 #  ## Event times ~ Weibull(lambda0, rho) with linear predictor lp
 #  ## rho=1 corresponds to exponential distribution

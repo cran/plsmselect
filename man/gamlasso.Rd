@@ -6,16 +6,41 @@
 \alias{gamlasso.default}
 \title{Fitting a gamlasso model}
 \usage{
-\method{gamlasso}{formula}(formula, data, family = "gaussian",
-  linear.penalty = "l1", smooth.penalty = "l2", num.knots = 5,
-  offset = NULL, weights = NULL, interactions = F,
-  seed = .Random.seed[1], num.iter = 100, tolerance = 1e-04, ...)
+\method{gamlasso}{formula}(
+  formula,
+  data,
+  family = "gaussian",
+  linear.penalty = "l1",
+  smooth.penalty = "l2",
+  num.knots = 5,
+  offset = NULL,
+  weights = NULL,
+  interactions = F,
+  seed = .Random.seed[1],
+  num.iter = 100,
+  tolerance = 1e-04,
+  ...
+)
 
-\method{gamlasso}{default}(response, linear.terms, smooth.terms, data,
-  family = "gaussian", linear.penalty = "l1", smooth.penalty = "l2",
-  num.knots = 5, offset = NULL, weights = NULL, interactions = F,
-  seed = .Random.seed[1], num.iter = 100, tolerance = 1e-04,
-  prompts = F, verbose = T, ...)
+\method{gamlasso}{default}(
+  response,
+  linear.terms,
+  smooth.terms,
+  data,
+  family = "gaussian",
+  linear.penalty = "l1",
+  smooth.penalty = "l2",
+  num.knots = 5,
+  offset = NULL,
+  weights = NULL,
+  interactions = F,
+  seed = .Random.seed[1],
+  num.iter = 100,
+  tolerance = 1e-04,
+  prompts = F,
+  verbose = T,
+  ...
+)
 }
 \arguments{
 \item{formula}{A formula describing the model to be fitted}
@@ -154,7 +179,6 @@ The default values of \code{num.iter} and \code{tolerance} are
 }
 \examples{
 library(plsmselect)
-library(tidyverse)
 
 data(simData)
 

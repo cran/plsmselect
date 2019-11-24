@@ -4,12 +4,24 @@
 \alias{gamlassoFit}
 \title{The function fitting a gamlasso model}
 \usage{
-gamlassoFit(data, formula = NULL, response.name = NULL,
-  linear.name = NULL, smooth.name = NULL, family = "gaussian",
-  linear.penalty = 0, smooth.penalty = 2, offset.name = NULL,
-  weights.name = NULL, num.knots = 5, num.iter = 100,
-  interactions = F, tolerance = 1e-04, seed = .Random.seed[1],
-  verbose = TRUE)
+gamlassoFit(
+  data,
+  formula = NULL,
+  response.name = NULL,
+  linear.name = NULL,
+  smooth.name = NULL,
+  family = "gaussian",
+  linear.penalty = 0,
+  smooth.penalty = 2,
+  offset.name = NULL,
+  weights.name = NULL,
+  num.knots = 5,
+  num.iter = 100,
+  interactions = F,
+  tolerance = 1e-04,
+  seed = .Random.seed[1],
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data}{The training data for fitting the model}
